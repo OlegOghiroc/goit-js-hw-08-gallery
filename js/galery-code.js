@@ -26,7 +26,8 @@ const lightboxImage = images.map((image) => {
 onGaleryList.insertAdjacentHTML('afterbegin', lightboxImage);
 
 // ! Делегирование
-onGaleryList.addEventListener('click', onLightboxConteinerClick)
+onGaleryList.addEventListener('click', onLightboxConteinerClick);
+
 function onLightboxConteinerClick(evt) {
     
     evt.preventDefault();
@@ -43,14 +44,17 @@ function onLightboxConteinerClick(evt) {
 // ! Відкриття модалки
 function onLightboxSwitchOnModal() {
     window.addEventListener('keydown', onEscClose);
+    window.addEventListener('keydown', changeOriginImageByKeys);
     onLightboxOpenModal.classList.add('is-open');
 }
 
 
 // ! Закриття модалки
 closeLightboxButon.addEventListener('click', onLightboxCloseModal);
+
 function onLightboxCloseModal() {
     window.removeEventListener('keydown', onEscClose);
+    window.removeEventListener('keydown', changeOriginImageByKeys);
     onLightboxOpenModal.classList.remove('is-open');
     lightboxImageElement.src = '';
 }
@@ -67,4 +71,33 @@ function onEscClose(evt) {
     if (evt.code === 'Escape') {
         onLightboxCloseModal()
     }
+}
+
+// переключання клавою
+let currentImg = 0;
+function changeOriginImageByKeys(evt) {
+    const onArrowRight = evt.code === "ArrowRight";
+    const onArrowLeft = evt.code === "ArrowLeft";
+  if (!onArrowRight && !onArrowLeft) {
+    return;
+  }
+  if (onArrowRight) {
+    currentImg += 1;
+  }
+  if (onArrowLeft) {
+    currentImg -= 1;
+  }
+  // з
+  if (currentImg > images.length - 1) {
+      currentImg = 0;
+  };
+  if (currentImg < 0) {
+      currentImg = images.length - 1;
+  }
+    setModalImg(currentImg);
+}
+function setModalImg(index) {
+  // console.log(images[index]);
+    const oriImg = images[index];
+    lightboxImageElement.src = oriImg.original;
 }
